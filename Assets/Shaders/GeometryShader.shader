@@ -4,9 +4,6 @@ Shader "ShaderDemo/GeometryShader"
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_Num ("Number", Range(0, 25)) = 1
-		_Offset ("Offset", Vector) = (0.0, 0.0, 0.0, 0.0)
-		_EndScale ("End Scale", Vector) = (1.0, 1.0, 1.0, 1.0)
 	}
 	
 	SubShader
@@ -33,8 +30,11 @@ Shader "ShaderDemo/GeometryShader"
 			uniform sampler2D _MainTex;
 			uniform float4 _MainTex_ST;
 			uniform float4 _Offset;
-			uniform float _Num;
 			uniform float4 _EndScale;
+
+			// Variables passed from script
+			uniform float _PositionsArray[3 * 25];
+			uniform float _InstanceCounter;
 			
 			// Base Input Structs
 			struct VSInput
@@ -85,29 +85,28 @@ Shader "ShaderDemo/GeometryShader"
 			{
 				 VSOutput OUT = (VSOutput) 0;
 				 float3 normal = normalize(cross(input[1].worldPosition.xyz - input[0].worldPosition.xyz, input[2].worldPosition.xyz - input[0].worldPosition.xyz));
-				 float4 curOffset = float4(0.0, 0.0, 0.0, 0.0);
-				 float4 curSize = float4(1.0, 1.0, 1.0, 1.0);
-				 float4 scaleChange = (curSize - _EndScale) / _Num;
 				
-				 for(int k = 0; k < _Num; k++)
+				 for(int k = 0; k < _InstanceCounter; k++)
 				 {
 				 	for(int i = 0; i < 3; i++)
 				 	{
 				 		OUT.normal = normal;
 				 		OUT.uv = input[i].uv;
+
+						float3 position;
+						int arrayOffset = k * 3;
+						position.x = _PositionsArray[0 + arrayOffset];
+						position.y = _PositionsArray[1 + arrayOffset];
+						position.z = _PositionsArray[2 + arrayOffset];
 						
-				 		float4 curVertex = float4((curSize * input[i].worldPosition.xyz + curOffset), 1.0);
+				 		float4 curVertex = float4((input[i].worldPosition.xyz + position), 1.0);
 				 		curVertex = mul(unity_WorldToObject, curVertex);
 
-				 		float4 rotatedVertex = float4(curVertex.x, curVertex.z, 1.0, 1.0);
-				 		rotatedVertex = CalculateRotation(rotatedVertex);
-				 		OUT.vertex = UnityObjectToClipPos(float4(rotatedVertex.x, curVertex.y, rotatedVertex.y, curVertex.w));
+				 		OUT.vertex = UnityObjectToClipPos(curVertex);
 
 				 		OutputStream.Append(OUT);
 				 	}
 					
-				 	curOffset.xyz += _Offset.xyz;
-				 	curSize -= scaleChange;
 				 	OutputStream.RestartStrip();
 				}
 			 }
