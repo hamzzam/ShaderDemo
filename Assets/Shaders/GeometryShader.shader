@@ -33,7 +33,7 @@ Shader "ShaderDemo/GeometryShader"
 			uniform float4 _EndScale;
 
 			// Variables passed from script
-			uniform float _PositionsArray[3 * 25];
+			uniform float3 _PositionsArray[3 * 25];
 			uniform float _InstanceCounter;
 			
 			// Base Input Structs
@@ -93,12 +93,7 @@ Shader "ShaderDemo/GeometryShader"
 				 		OUT.normal = normal;
 				 		OUT.uv = input[i].uv;
 
-						float3 position;
-						int arrayOffset = k * 3;
-						position.x = _PositionsArray[0 + arrayOffset];
-						position.y = _PositionsArray[1 + arrayOffset];
-						position.z = _PositionsArray[2 + arrayOffset];
-						
+						float3 position = _PositionsArray[k].xyz;
 				 		float4 curVertex = float4((input[i].worldPosition.xyz + position), 1.0);
 				 		curVertex = mul(unity_WorldToObject, curVertex);
 
