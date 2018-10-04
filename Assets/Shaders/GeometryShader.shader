@@ -33,7 +33,7 @@ Shader "ShaderDemo/GeometryShader"
 			uniform float4 _EndScale;
 
 			// Variables passed from script
-			uniform float3 _PositionsArray[3 * 25];
+			uniform float3 _PositionsArray[1024];
 			uniform float _InstanceCounter;
 			
 			// Base Input Structs
@@ -61,22 +61,6 @@ Shader "ShaderDemo/GeometryShader"
 				OUT.normal = IN.normal;
 				OUT.worldPosition = mul(unity_ObjectToWorld, IN.vertex).xyz;
 				return OUT;
-			}
-
-			// Rotates the Coordinate sent as a parameter
-			float4 CalculateRotation(float4 pos)
-			{
-				// How much rotation do we have right now?
-				float rotation = 10 * _Time.y;
-
-				// Create the Rotation Matrix
-				float s, c;
-				sincos(radians(rotation), s, c); // compute the sin and cosine
-				float2x2 rotationMatrix = float2x2(c, -s, s, c);
-
-				// Use the rotation matrix to rotate the vertices
-				pos.xy = mul(pos.xy, rotationMatrix);
-				return pos;
 			}
 			
 			// The Geometry Shader

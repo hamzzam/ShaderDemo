@@ -22,6 +22,7 @@ public class PositionController : MonoBehaviour {
 		materialProperty.SetFloat(Constants.INSTANCE_COUNTER, instanceCount);
 
 		positionsArray = new Vector4[instanceCount * 3];
+        Debug.Log("Instance Count: " + instanceCount);
 	}
 	
 	// Update is called once per frame
