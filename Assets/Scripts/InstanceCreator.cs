@@ -7,7 +7,7 @@ public class InstanceCreator : MonoBehaviour {
     public GameObject prefab;
 	// Use this for initialization
 	void Start () {
-        for (int i = 0; i < 350; i++)
+        for (int i = 0; i < 37; i++)
         {
             GameObject instance = GameObject.Instantiate(prefab);
             Vector3 position = instance.transform.position;

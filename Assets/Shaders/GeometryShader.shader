@@ -29,11 +29,9 @@ Shader "ShaderDemo/GeometryShader"
 			// User Defined Variables
 			uniform sampler2D _MainTex;
 			uniform float4 _MainTex_ST;
-			uniform float4 _Offset;
-			uniform float4 _EndScale;
 
 			// Variables passed from script
-			uniform float3 _PositionsArray[1024];
+			uniform float3 _PositionsArray[114];
 			uniform float _InstanceCounter;
 			
 			// Base Input Structs
@@ -51,6 +49,13 @@ Shader "ShaderDemo/GeometryShader"
 				float2 uv : TEXCOORD0;
 				float3 worldPosition : TEXCOORD1;
 			};
+
+			struct g2f
+			{
+				float4 vertex : SV_POSITION;
+				float3 normal : NORMAL;
+				float2 uv : TEXCOORD0;
+			};
 			
 			// The Vertex Shader 
 			VSOutput vertexShader(VSInput IN)
@@ -64,10 +69,10 @@ Shader "ShaderDemo/GeometryShader"
 			}
 			
 			// The Geometry Shader
-			[maxvertexcount(75)] // How many vertices can the shader output?
-			void geometryShader(triangle VSOutput input[3], inout TriangleStream<VSOutput> OutputStream)
+			[maxvertexcount(113)] // How many vertices can the shader output?
+			void geometryShader(triangle VSOutput input[3], inout TriangleStream<g2f> OutputStream)
 			{
-				 VSOutput OUT = (VSOutput) 0;
+				 g2f OUT = (g2f) 0;
 				 float3 normal = normalize(cross(input[1].worldPosition.xyz - input[0].worldPosition.xyz, input[2].worldPosition.xyz - input[0].worldPosition.xyz));
 				
 				 for(int k = 0; k < _InstanceCounter; k++)
@@ -78,6 +83,7 @@ Shader "ShaderDemo/GeometryShader"
 				 		OUT.uv = input[i].uv;
 
 						float3 position = _PositionsArray[k].xyz;
+						position.x += k;
 				 		float4 curVertex = float4((input[i].worldPosition.xyz + position), 1.0);
 				 		curVertex = mul(unity_WorldToObject, curVertex);
 
