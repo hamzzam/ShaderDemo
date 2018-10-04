@@ -21,7 +21,7 @@ Shader "ShaderDemo/GeometryShader"
 			// Pragmas
 			#pragma vertex vertexShader
 			#pragma fragment fragmentShader
-			 #pragma geometry geometryShader
+			#pragma geometry geometryShader
 			
 			// Helper functions
 			#include "UnityCG.cginc"
@@ -97,7 +97,7 @@ Shader "ShaderDemo/GeometryShader"
 			 }
 			
 			// The Fragment Shader
-			fixed4 fragmentShader(VSOutput IN) : SV_Target
+			fixed4 fragmentShader(g2f IN) : SV_Target
 			{
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, IN.uv).rgba;
